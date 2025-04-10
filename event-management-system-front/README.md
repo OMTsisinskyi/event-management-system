@@ -53,8 +53,8 @@ src/
 ├── app/              # Next.js app directory
 ├── components/       # Reusable components
 ├── hooks/            # Custom React hooks
-├── services          # Utility functions
+├── services          # API functions
 ├── types/            # TypeScript type definitions
-└── utils             # Global styles
+└── utils             # unils functions
 ```
 

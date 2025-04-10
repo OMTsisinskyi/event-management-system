@@ -74,8 +74,8 @@ The API will be available at `http://localhost:3000`
 ```
 src/
 ├── events/          # Events module
-├── categories       # Users module
-├── prisma/          # Database schema and migrations
+├── categories       # Categories module
+├── prisma/          # Database service
 └── main.ts          # Application entry point
 ```
 
