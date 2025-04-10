@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import { LocationDto } from './dto/location.dto';
 
 @Injectable()
 export class EventsService {
@@ -99,7 +98,6 @@ export class EventsService {
 
         const eventLocation = event.location as { lat: number; lng: number };
         
-        // Get all other events
         const allEvents = await this.prisma.event.findMany({
             where: {
                 id: { not: eventId }

@@ -64,7 +64,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error 
         const geocoder = new google.maps.Geocoder();
         try {
             const result = await geocoder.geocode({ address: searchQuery });
-        
+
             if (!result.results || result.results.length === 0) {
                 setSearchError('No locations found for this search query');
                 return;
@@ -80,12 +80,17 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error 
             map?.panTo(location.geometry.location);
             map?.setZoom(15);
             setSearchError(null);
-        } catch (error: any) {
-            if (error.message && error.message.includes('ZERO_RESULTS')) {
-                setSearchError('No locations found for this search query');
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                if (error.message.includes('ZERO_RESULTS')) {
+                    setSearchError('No locations found for this search query');
+                } else {
+                    console.error('Geocoding error:', error);
+                    setSearchError('Error searching for location. Please try again.');
+                }
             } else {
-                console.error('Geocoding error:', error);
-                setSearchError('Error searching for location. Please try again.');
+                console.error('Unknown error:', error);
+                setSearchError('An unknown error occurred.');
             }
         }
     }, [searchQuery, map, onChange]);
