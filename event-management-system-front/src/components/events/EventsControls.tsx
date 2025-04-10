@@ -30,6 +30,8 @@ export default function EventsControls({
     const handleViewModeChange = (
         newMode: 'list' | 'map' | null,
     ) => {
+        console.log(newMode);
+
         if (newMode !== null) {
             onViewModeChange(newMode);
         }
@@ -95,7 +97,7 @@ export default function EventsControls({
                 <ToggleButtonGroup
                     value={viewMode}
                     exclusive
-                    onChange={() => handleViewModeChange}
+                    onChange={(_, newMode) => handleViewModeChange(newMode)}
                     aria-label="view mode"
                     sx={{ width: { xs: '100%', sm: 'auto' } }}
                 >

@@ -19,6 +19,7 @@ interface LocationPickerProps {
 const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [map, setMap] = useState<google.maps.Map | null>(null);
+    const [searchError, setSearchError] = useState<string | null>(null);
 
     const center = useMemo(() => ({
         lat: value.lat || 0,
@@ -63,19 +64,29 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error 
         const geocoder = new google.maps.Geocoder();
         try {
             const result = await geocoder.geocode({ address: searchQuery });
-            if (result.results[0]) {
-                const location = result.results[0];
-                const newLocation = {
-                    name: location.formatted_address,
-                    lat: location.geometry.location.lat(),
-                    lng: location.geometry.location.lng(),
-                };
-                onChange(newLocation);
-                map?.panTo(location.geometry.location);
-                map?.setZoom(15);
+        
+            if (!result.results || result.results.length === 0) {
+                setSearchError('No locations found for this search query');
+                return;
             }
-        } catch (error) {
-            console.error('Geocoding error:', error);
+
+            const location = result.results[0];
+            const newLocation = {
+                name: location.formatted_address,
+                lat: location.geometry.location.lat(),
+                lng: location.geometry.location.lng(),
+            };
+            onChange(newLocation);
+            map?.panTo(location.geometry.location);
+            map?.setZoom(15);
+            setSearchError(null);
+        } catch (error: any) {
+            if (error.message && error.message.includes('ZERO_RESULTS')) {
+                setSearchError('No locations found for this search query');
+            } else {
+                console.error('Geocoding error:', error);
+                setSearchError('Error searching for location. Please try again.');
+            }
         }
     }, [searchQuery, map, onChange]);
 
@@ -86,7 +97,12 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange, error 
                     fullWidth
                     label="Search Location"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setSearchError(null);
+                    }}
+                    error={!!searchError}
+                    helperText={searchError}
                     sx={{ mb: 1 }}
                 />
                 <Button

@@ -40,6 +40,9 @@ const Home: React.FC = () => {
     );
   }
 
+  console.log(viewMode);
+
+
   return (
     <Box>
       <Box sx={{ mb: 4 }}>
